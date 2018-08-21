@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack --mode=production",
-    "deploy": "gh-pages -d public",
+    "deploy": "npm run build && gh-pages -d public",
     "start": "webpack-dev-server --mode=development"
   },
   "keywords": [],

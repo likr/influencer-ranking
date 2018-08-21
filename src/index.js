@@ -13,9 +13,13 @@ const reversedYearMonths = Array.from(yearMonths).reverse()
 
 class Chart extends React.Component {
   render () {
-    const {maxRank, sort} = this.props
+    const {top, maxRank, sort} = this.props
 
-    const data = this.props.data.filter((item) => yearMonths.some((ym) => item[ym].rank != null && item[ym].rank <= maxRank))
+    const data0 = Array.from(this.props.data)
+    data0.sort((d1, d2) => d2.retweetedCount - d1.retweetedCount)
+    const data = data0.slice(0, Math.min(top, data0.length))
+      .filter((item) => yearMonths.some((ym) => item[ym].rank != null && item[ym].rank <= maxRank))
+
     for (const item of data) {
       item.first = yearMonths.find((ym) => item[ym].rank != null && item[ym].rank <= maxRank)
       item.last = reversedYearMonths.find((ym) => item[ym].rank != null && item[ym].rank <= maxRank)
@@ -123,6 +127,7 @@ class App extends React.Component {
   constructor () {
     super()
     this.state = {
+      top: 100,
       maxRank: 10,
       sort: 'first'
     }
@@ -130,21 +135,27 @@ class App extends React.Component {
 
   render () {
     const {data} = this.props
-    const {maxRank, sort} = this.state
+    const {top, maxRank, sort} = this.state
 
     return <div>
       <div className='container'>
         <form onSubmit={this.handleSubmit.bind(this)}>
           <div className='field'>
+            <label className='label'>Top</label>
+            <div className='control'>
+              <input ref='top' className='input' type='number' min='1' max='100' defaultValue={top} />
+            </div>
+          </div>
+          <div className='field'>
             <label className='label'>Rank Max</label>
             <div className='control'>
-              <input ref='maxRank' className='input' type='number' min='1' max='100' defaultValue='10' />
+              <input ref='maxRank' className='input' type='number' min='1' max='100' defaultValue={maxRank} />
             </div>
           </div>
           <div className='field'>
             <label className='label'>Sort</label>
             <div className='control'>
-              <select ref='sort' className='input' defaultValue='first'>
+              <select ref='sort' className='input' defaultValue={sort}>
                 <option value='first'>first</option>
                 <option value='last'>last</option>
                 <option value='length'>last - first</option>
@@ -161,7 +172,7 @@ class App extends React.Component {
         </form>
       </div>
       <div style={{overflow: 'scroll'}} >
-        <Chart data={data} maxRank={maxRank} sort={sort} />
+        <Chart data={data} top={top} maxRank={maxRank} sort={sort} />
       </div>
     </div>
   }
@@ -169,6 +180,7 @@ class App extends React.Component {
   handleSubmit (event) {
     event.preventDefault()
     this.setState({
+      top: +this.refs.top.value,
       maxRank: +this.refs.maxRank.value,
       sort: this.refs.sort.value
     })
