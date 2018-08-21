@@ -87,7 +87,7 @@ class Chart extends React.Component {
               const showLabel = ym.endsWith('01')
               return <g key={i} transform={`translate(${dx * i + dx / 2},0)`}>
                 {showLabel ? <text dy={-l - 5} textAnchor='middle'>{ym}</text> : ''}
-                <line x1='0' y1={showLabel ? -l : 0} x2='0' y2={showLabel ? contentHeight + l : contentHeight} stroke='#ccc' strokeWidth={showLabel ? 3 : 1} />
+                <line x1='0' y1={showLabel ? -l : 0} x2='0' y2={showLabel ? contentHeight + l : contentHeight} stroke='#eee' strokeWidth={showLabel ? 3 : 1} />
               </g>
             })
           }
@@ -97,7 +97,8 @@ class Chart extends React.Component {
             data.map((item, i) => {
               return <g key={item.influencerId} transform={`translate(0,${i * dy + dy / 2})`}>
                 <text dx='-3' dy='5' textAnchor='end'>{item.screenName}</text>
-                <line x1='0' y1='0' x2={contentWidth} y2='0' stroke='#ddd' strokeWidth={lineWidthScale(item.retweetedCount)} opacity='0.5' />
+                <line x1='0' y1='0' x2={contentWidth} y2='0' stroke='#eee' strokeWidth={lineWidthScale(item.retweetedCount)} opacity='0.5' />
+                <line x1={item.firstIndex * dx + dx / 2} y1='0' x2={(item.lastIndex + 1) * dx - dx / 2} y2='0' stroke='#bbb' strokeWidth={lineWidthScale(item.retweetedCount)} opacity='0.5' />
               </g>
             })
           }
