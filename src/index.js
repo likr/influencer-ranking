@@ -1,7 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import * as d3 from 'd3'
-import {yearMonths} from './yearmonth'
+import {yearMonths1} from './yearmonth1'
+import {yearMonths3} from './yearmonth3'
+
+const url = new window.URL(window.location.href)
+const months = +url.searchParams.get('months') || 1
+const yearMonths = months === 3 ? yearMonths3 : yearMonths1
 
 const leftMargin = 200
 const rightMargin = 10
@@ -84,7 +89,7 @@ class Chart extends React.Component {
           {
             yearMonths.map((ym, i) => {
               const l = 20
-              const showLabel = ym.endsWith('01')
+              const showLabel = ym.endsWith(months === 3 ? '03' : '01')
               return <g key={i} transform={`translate(${dx * i + dx / 2},0)`}>
                 {showLabel ? <text dy={-l - 5} textAnchor='middle'>{ym}</text> : ''}
                 <line x1='0' y1={showLabel ? -l : 0} x2='0' y2={showLabel ? contentHeight + l : contentHeight} stroke='#eee' strokeWidth={showLabel ? 3 : 1} />
@@ -129,7 +134,7 @@ class App extends React.Component {
     super()
     this.state = {
       top: 100,
-      maxRank: 10,
+      maxRank: 20,
       sort: 'first'
     }
   }
@@ -188,7 +193,7 @@ class App extends React.Component {
   }
 }
 
-window.fetch('data.json')
+window.fetch(`data-${months}month.json`)
   .then((response) => response.json())
   .then((data) => {
     for (const item of data) {

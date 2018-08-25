@@ -1,4 +1,4 @@
-export const yearMonths = [
+export const yearMonths1 = [
   '201101',
   '201102',
   '201103',
